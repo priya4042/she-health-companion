@@ -1,0 +1,40 @@
+class AppConstants {
+  AppConstants._();
+
+  // Hive box names
+  static const String periodBox = 'period_records';
+  static const String symptomsBox = 'symptom_entries';
+  static const String medicineBox = 'medicines';
+  static const String medicineDoseBox = 'medicine_doses';
+  static const String waterBox = 'water_intake';
+  static const String settingsBox = 'settings';
+  static const String profileBox = 'profile';
+
+  // Settings keys
+  static const String keyThemeMode = 'theme_mode';
+  static const String keyOnboardingDone = 'onboarding_done';
+  static const String keyCycleLength = 'cycle_length';
+  static const String keyPeriodDuration = 'period_duration';
+  static const String keyWaterGoal = 'water_goal';
+  static const String keyWaterReminderInterval = 'water_reminder_interval';
+  static const String keyWaterReminderEnabled = 'water_reminder_enabled';
+
+  // Profile keys
+  static const String keyName = 'name';
+  static const String keyAge = 'age';
+
+  // Default values
+  static const int defaultCycleLength = 28;
+  static const int defaultPeriodDuration = 5;
+  static const int defaultWaterGoal = 8; // glasses
+  static const int defaultWaterReminderInterval = 2; // hours
+  static const int waterGlassMl = 250;
+
+  // Notification channel
+  static const String medicineChannelId = 'medicine_reminders';
+  static const String medicineChannelName = 'Medicine Reminders';
+  static const String waterChannelId = 'water_reminders';
+  static const String waterChannelName = 'Water Reminders';
+  static const String periodChannelId = 'period_reminders';
+  static const String periodChannelName = 'Period Reminders';
+}
