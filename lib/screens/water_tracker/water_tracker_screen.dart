@@ -1,41 +1,120 @@
+import 'package:confetti/confetti.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../core/utils/haptic_utils.dart';
+import '../../data/providers/streak_provider.dart';
 import '../../data/providers/water_provider.dart';
+import '../../widgets/glass_card.dart';
 
-class WaterTrackerScreen extends StatelessWidget {
+class WaterTrackerScreen extends StatefulWidget {
   const WaterTrackerScreen({super.key});
+
+  @override
+  State<WaterTrackerScreen> createState() => _WaterTrackerScreenState();
+}
+
+class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
+  late ConfettiController _confettiController;
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 2));
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final water = context.watch<WaterProvider>();
+    final streak = context.watch<StreakProvider>();
+    final waterStreak = streak.getStreak('water');
 
     return Scaffold(
       appBar: AppBar(title: const Text('Water Tracker')),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            // Progress circle
-            _buildProgressCircle(context, water),
-            const SizedBox(height: 30),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              children: [
+                // Streak badge
+                if (waterStreak > 0)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: AppColors.streakColor.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Text('🔥', style: TextStyle(fontSize: 20)),
+                        const SizedBox(width: 6),
+                        Text(
+                          '$waterStreak day streak!',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.streakColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ).animate().fadeIn().scale(begin: const Offset(0.8, 0.8)),
+                const SizedBox(height: 16),
 
-            // Add / Remove buttons
-            _buildActionButtons(context, water),
-            const SizedBox(height: 30),
+                // Progress circle
+                _buildProgressCircle(context, water)
+                    .animate()
+                    .fadeIn(duration: 500.ms)
+                    .scale(begin: const Offset(0.9, 0.9)),
+                const SizedBox(height: 30),
 
-            // Weekly chart
-            _buildWeeklyChart(context, water),
-            const SizedBox(height: 24),
+                // Add / Remove buttons
+                _buildActionButtons(context, water, streak),
+                const SizedBox(height: 30),
 
-            // Settings
-            _buildSettings(context, water),
-            const SizedBox(height: 20),
-          ],
-        ),
+                // Weekly chart
+                GlassCard(
+                  padding: const EdgeInsets.all(20),
+                  child: _buildWeeklyChartContent(context, water),
+                ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.1),
+                const SizedBox(height: 24),
+
+                // Settings
+                GlassCard(
+                  child: _buildSettingsContent(context, water),
+                ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1),
+                const SizedBox(height: 20),
+              ],
+            ),
+          ),
+          // Confetti
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              colors: const [
+                AppColors.waterColor,
+                AppColors.success,
+                AppColors.primary,
+                Colors.yellow,
+              ],
+              numberOfParticles: 20,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -86,7 +165,7 @@ class WaterTrackerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButtons(BuildContext context, WaterProvider water) {
+  Widget _buildActionButtons(BuildContext context, WaterProvider water, StreakProvider streak) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -107,7 +186,17 @@ class WaterTrackerScreen extends StatelessWidget {
 
         // Add glass button
         GestureDetector(
-          onTap: () => water.addWater(),
+          onTap: () async {
+            final wasGoalReached = water.goalReached;
+            await water.addWater();
+            if (!wasGoalReached && water.goalReached) {
+              _confettiController.play();
+              HapticUtils.success();
+              await streak.recordCompletion('water');
+            } else {
+              HapticUtils.lightTap();
+            }
+          },
           child: Container(
             width: 80,
             height: 80,
@@ -167,17 +256,11 @@ class WaterTrackerScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildWeeklyChart(BuildContext context, WaterProvider water) {
+  Widget _buildWeeklyChartContent(BuildContext context, WaterProvider water) {
     final weeklyData = water.weeklyData;
     final maxY = (water.dailyGoal + 2).toDouble();
 
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
+    return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
@@ -265,24 +348,17 @@ class WaterTrackerScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
     );
   }
 
-  Widget _buildSettings(BuildContext context, WaterProvider water) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Settings',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-          ),
+  Widget _buildSettingsContent(BuildContext context, WaterProvider water) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Settings',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+        ),
           const SizedBox(height: 12),
 
           // Daily goal
@@ -361,7 +437,6 @@ class WaterTrackerScreen extends StatelessWidget {
               ],
             ),
         ],
-      ),
     );
   }
 }

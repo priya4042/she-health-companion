@@ -44,6 +44,10 @@ class AppColors {
   static const Color medicineColor = Color(0xFF9C27B0);
   static const Color waterColor = Color(0xFF2196F3);
   static const Color healthColor = Color(0xFF4CAF50);
+  static const Color moodColor = Color(0xFFFFB74D);
+  static const Color bmiColor = Color(0xFF26A69A);
+  static const Color streakColor = Color(0xFFFF7043);
+  static const Color analyticsColor = Color(0xFF5C6BC0);
 
   // Gradient
   static const LinearGradient primaryGradient = LinearGradient(

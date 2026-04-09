@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/health_tips.dart';
 import '../../core/theme/app_colors.dart';
-import '../../data/providers/period_provider.dart';
+import '../../core/utils/haptic_utils.dart';
+import '../../core/utils/page_transitions.dart';
 import '../../data/providers/profile_provider.dart';
+
 import '../../data/providers/theme_provider.dart';
+import '../analytics/analytics_screen.dart';
+import '../bmi_calculator/bmi_calculator_screen.dart';
 import '../water_tracker/water_tracker_screen.dart';
 import '../settings/settings_screen.dart';
 
@@ -37,8 +42,36 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.waterColor,
               onTap: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const WaterTrackerScreen()),
+                SlidePageRoute(page: const WaterTrackerScreen()),
               ),
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.monitor_weight_rounded,
+              title: 'BMI Calculator',
+              subtitle: 'Check your body mass index',
+              color: AppColors.bmiColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(
+                  context,
+                  SlidePageRoute(page: const BmiCalculatorScreen()),
+                );
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.analytics_rounded,
+              title: 'Health Analytics',
+              subtitle: 'View your health insights',
+              color: AppColors.analyticsColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(
+                  context,
+                  SlidePageRoute(page: const AnalyticsScreen()),
+                );
+              },
             ),
             _buildMenuCard(
               context,

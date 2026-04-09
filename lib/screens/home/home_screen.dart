@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 
 import '../../core/constants/health_tips.dart';
+import '../../core/constants/motivational_quotes.dart';
 import '../../core/theme/app_colors.dart';
+import '../../core/theme/app_gradients.dart';
 import '../../core/utils/date_utils.dart';
+import '../../core/utils/haptic_utils.dart';
+import '../../core/utils/page_transitions.dart';
 import '../../data/providers/medicine_provider.dart';
 import '../../data/providers/period_provider.dart';
 import '../../data/providers/profile_provider.dart';
+import '../../data/providers/streak_provider.dart';
 import '../../data/providers/water_provider.dart';
+import '../../widgets/glass_card.dart';
+import '../../widgets/gradient_card.dart';
+import '../analytics/analytics_screen.dart';
+import '../bmi_calculator/bmi_calculator_screen.dart';
 import '../water_tracker/water_tracker_screen.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,6 +29,7 @@ class HomeScreen extends StatelessWidget {
     final period = context.watch<PeriodProvider>();
     final medicine = context.watch<MedicineProvider>();
     final water = context.watch<WaterProvider>();
+    final streak = context.watch<StreakProvider>();
 
     return SafeArea(
       child: SingleChildScrollView(
@@ -27,23 +38,51 @@ class HomeScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Greeting
-            _buildGreeting(context, profile.name),
+            _buildGreeting(context, profile.name)
+                .animate()
+                .fadeIn(duration: 400.ms)
+                .slideX(begin: -0.1),
+            const SizedBox(height: 16),
+
+            // Motivational quote
+            _buildQuoteCard(context)
+                .animate()
+                .fadeIn(delay: 100.ms, duration: 500.ms)
+                .slideY(begin: 0.1),
             const SizedBox(height: 20),
 
-            // Quick stats cards
-            _buildQuickStats(context, period, medicine, water),
-            const SizedBox(height: 24),
+            // Quick stats
+            _buildQuickStats(context, period, medicine, water, streak)
+                .animate()
+                .fadeIn(delay: 200.ms)
+                .slideY(begin: 0.1),
+            const SizedBox(height: 20),
 
-            // Water tracker quick access
-            _buildWaterCard(context, water),
-            const SizedBox(height: 24),
+            // Water card
+            _buildWaterCard(context, water)
+                .animate()
+                .fadeIn(delay: 300.ms)
+                .slideY(begin: 0.1),
+            const SizedBox(height: 20),
 
-            // Today's health tip
-            _buildHealthTipCard(context),
-            const SizedBox(height: 24),
+            // Health tip
+            _buildHealthTipCard(context)
+                .animate()
+                .fadeIn(delay: 400.ms)
+                .slideY(begin: 0.1),
+            const SizedBox(height: 20),
+
+            // Quick access row (BMI + Analytics)
+            _buildQuickAccessRow(context)
+                .animate()
+                .fadeIn(delay: 500.ms)
+                .slideY(begin: 0.1),
+            const SizedBox(height: 20),
 
             // Today's medicines
-            _buildTodayMedicines(context, medicine),
+            _buildTodayMedicines(context, medicine)
+                .animate()
+                .fadeIn(delay: 600.ms),
             const SizedBox(height: 20),
           ],
         ),
@@ -54,41 +93,105 @@ class HomeScreen extends StatelessWidget {
   Widget _buildGreeting(BuildContext context, String name) {
     final hour = DateTime.now().hour;
     String greeting;
+    IconData icon;
     if (hour < 12) {
       greeting = 'Good Morning';
+      icon = Icons.wb_sunny_rounded;
     } else if (hour < 17) {
       greeting = 'Good Afternoon';
+      icon = Icons.wb_cloudy_rounded;
     } else {
       greeting = 'Good Evening';
+      icon = Icons.nights_stay_rounded;
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Text(
-          greeting,
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey.shade600,
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(icon, size: 18, color: AppColors.moodColor),
+                  const SizedBox(width: 6),
+                  Text(
+                    greeting,
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                name.isNotEmpty ? name : 'Welcome!',
+                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                AppDateUtils.formatDate(DateTime.now()),
+                style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+              ),
+            ],
           ),
         ),
-        const SizedBox(height: 4),
-        Text(
-          name.isNotEmpty ? name : 'Welcome!',
-          style: const TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.bold,
+        Container(
+          width: 50,
+          height: 50,
+          decoration: BoxDecoration(
+            gradient: AppColors.primaryGradient,
+            borderRadius: BorderRadius.circular(16),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          AppDateUtils.formatDate(DateTime.now()),
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade500,
+          child: Center(
+            child: Text(
+              name.isNotEmpty ? name[0].toUpperCase() : '?',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildQuoteCard(BuildContext context) {
+    final quote = MotivationalQuotes.getQuoteOfTheDay();
+
+    return GradientCard(
+      gradient: AppGradients.sunset,
+      padding: const EdgeInsets.all(18),
+      child: Row(
+        children: [
+          const Text('💫', style: TextStyle(fontSize: 28)),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '"${quote['quote']}"',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontStyle: FontStyle.italic,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '— ${quote['author']}',
+                  style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.8),
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -97,37 +200,106 @@ class HomeScreen extends StatelessWidget {
     PeriodProvider period,
     MedicineProvider medicine,
     WaterProvider water,
+    StreakProvider streak,
   ) {
+    final waterStreak = streak.getStreak('water');
+    final medStreak = streak.getStreak('medicine');
+
     return Row(
       children: [
         Expanded(
-          child: _StatCard(
-            icon: Icons.favorite_rounded,
-            label: 'Period',
-            value: period.isOnPeriod
-                ? 'Day ${period.currentCycleDay}'
-                : period.daysUntilNextPeriod != null
-                    ? '${period.daysUntilNextPeriod}d left'
-                    : 'Not set',
-            color: AppColors.periodColor,
+          child: GlassCard(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                const Icon(Icons.favorite_rounded,
+                    color: AppColors.periodColor, size: 28),
+                const SizedBox(height: 8),
+                Text(
+                  period.isOnPeriod
+                      ? 'Day ${period.currentCycleDay}'
+                      : period.daysUntilNextPeriod != null
+                          ? '${period.daysUntilNextPeriod}d'
+                          : '--',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.periodColor,
+                  ),
+                ),
+                Text('Period',
+                    style:
+                        TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+              ],
+            ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
-          child: _StatCard(
-            icon: Icons.medication_rounded,
-            label: 'Medicine',
-            value: '${medicine.todayTakenCount}/${medicine.todayTotalCount}',
-            color: AppColors.medicineColor,
+          child: GlassCard(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                const Icon(Icons.medication_rounded,
+                    color: AppColors.medicineColor, size: 28),
+                const SizedBox(height: 8),
+                Text(
+                  '${medicine.todayTakenCount}/${medicine.todayTotalCount}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.medicineColor,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Medicine',
+                        style: TextStyle(
+                            fontSize: 11, color: Colors.grey.shade500)),
+                    if (medStreak > 0) ...[
+                      const SizedBox(width: 4),
+                      Text('🔥$medStreak',
+                          style: const TextStyle(fontSize: 10)),
+                    ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 10),
         Expanded(
-          child: _StatCard(
-            icon: Icons.water_drop_rounded,
-            label: 'Water',
-            value: '${water.todayGlasses}/${water.dailyGoal}',
-            color: AppColors.waterColor,
+          child: GlassCard(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                const Icon(Icons.water_drop_rounded,
+                    color: AppColors.waterColor, size: 28),
+                const SizedBox(height: 8),
+                Text(
+                  '${water.todayGlasses}/${water.dailyGoal}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.waterColor,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Water',
+                        style: TextStyle(
+                            fontSize: 11, color: Colors.grey.shade500)),
+                    if (waterStreak > 0) ...[
+                      const SizedBox(width: 4),
+                      Text('🔥$waterStreak',
+                          style: const TextStyle(fontSize: 10)),
+                    ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -135,81 +307,60 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildWaterCard(BuildContext context, WaterProvider water) {
-    return GestureDetector(
+    return GradientCard(
+      gradient: AppGradients.water,
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => const WaterTrackerScreen()),
+          SlidePageRoute(page: const WaterTrackerScreen()),
         );
       },
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF42A5F5), Color(0xFF1E88E5)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Water Intake',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  '${water.todayMl} ml / ${water.goalMl} ml',
+                  style: const TextStyle(color: Colors.white70, fontSize: 14),
+                ),
+                const SizedBox(height: 12),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: LinearProgressIndicator(
+                    value: water.todayProgress,
+                    backgroundColor: Colors.white24,
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.white),
+                    minHeight: 8,
+                  ),
+                ),
+              ],
+            ),
           ),
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.waterColor.withValues(alpha: 0.3),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+          const SizedBox(width: 16),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white24,
+              borderRadius: BorderRadius.circular(14),
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Water Intake',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '${water.todayMl} ml / ${water.goalMl} ml',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: LinearProgressIndicator(
-                      value: water.todayProgress,
-                      backgroundColor: Colors.white24,
-                      valueColor:
-                          const AlwaysStoppedAnimation<Color>(Colors.white),
-                      minHeight: 8,
-                    ),
-                  ),
-                ],
-              ),
+            child: const Icon(
+              Icons.water_drop_rounded,
+              color: Colors.white,
+              size: 32,
             ),
-            const SizedBox(width: 16),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: const Icon(
-                Icons.water_drop_rounded,
-                color: Colors.white,
-                size: 32,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -220,42 +371,39 @@ class HomeScreen extends StatelessWidget {
     final category = categories[dayIndex];
     final tip = HealthTips.getDailyTip(category);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: AppColors.healthColor.withValues(alpha: 0.3),
-        ),
-      ),
+    return GlassCard(
+      padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Icon(Icons.lightbulb_rounded,
-                  color: AppColors.healthColor, size: 20),
-              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: AppColors.healthColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(Icons.lightbulb_rounded,
+                    color: AppColors.healthColor, size: 18),
+              ),
+              const SizedBox(width: 10),
               const Text(
                 'Daily Health Tip',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
               ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: AppColors.healthColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   category,
-                  style: TextStyle(
-                    fontSize: 12,
+                  style: const TextStyle(
+                    fontSize: 11,
                     color: AppColors.healthColor,
                     fontWeight: FontWeight.w600,
                   ),
@@ -267,13 +415,74 @@ class HomeScreen extends StatelessWidget {
           Text(
             tip,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 13,
               color: Colors.grey.shade600,
               height: 1.5,
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildQuickAccessRow(BuildContext context) {
+    return Row(
+      children: [
+        Expanded(
+          child: GradientCard(
+            gradient: AppGradients.bmi,
+            padding: const EdgeInsets.all(16),
+            onTap: () {
+              Navigator.of(context).push(
+                SlidePageRoute(page: const BmiCalculatorScreen()),
+              );
+            },
+            child: const Column(
+              children: [
+                Icon(Icons.monitor_weight_rounded,
+                    color: Colors.white, size: 32),
+                SizedBox(height: 8),
+                Text(
+                  'BMI\nCalculator',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: GradientCard(
+            gradient: AppGradients.analytics,
+            padding: const EdgeInsets.all(16),
+            onTap: () {
+              Navigator.of(context).push(
+                SlidePageRoute(page: const AnalyticsScreen()),
+              );
+            },
+            child: const Column(
+              children: [
+                Icon(Icons.analytics_rounded, color: Colors.white, size: 32),
+                SizedBox(height: 8),
+                Text(
+                  'Health\nAnalytics',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -286,26 +495,14 @@ class HomeScreen extends StatelessWidget {
       children: [
         const Text(
           "Today's Medicines",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
         ...doses.take(5).map((dose) {
           final medicineName = medicine.getMedicineName(dose.medicineId);
-          return Container(
+          return GlassCard(
             margin: const EdgeInsets.only(bottom: 8),
             padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardTheme.color,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: dose.taken
-                    ? AppColors.success.withValues(alpha: 0.3)
-                    : Colors.grey.withValues(alpha: 0.2),
-              ),
-            ),
             child: Row(
               children: [
                 Container(
@@ -321,9 +518,8 @@ class HomeScreen extends StatelessWidget {
                     dose.taken
                         ? Icons.check_circle_rounded
                         : Icons.medication_rounded,
-                    color: dose.taken
-                        ? AppColors.success
-                        : AppColors.medicineColor,
+                    color:
+                        dose.taken ? AppColors.success : AppColors.medicineColor,
                     size: 22,
                   ),
                 ),
@@ -343,16 +539,17 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         AppDateUtils.formatTime(dose.scheduledTime),
                         style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey.shade500,
-                        ),
+                            fontSize: 12, color: Colors.grey.shade500),
                       ),
                     ],
                   ),
                 ),
                 if (!dose.taken)
                   TextButton(
-                    onPressed: () => medicine.markDoseTaken(dose.id),
+                    onPressed: () {
+                      HapticUtils.lightTap();
+                      medicine.markDoseTaken(dose.id);
+                    },
                     child: const Text('Take'),
                   ),
               ],
@@ -360,54 +557,6 @@ class HomeScreen extends StatelessWidget {
           );
         }),
       ],
-    );
-  }
-}
-
-class _StatCard extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final String value;
-  final Color color;
-
-  const _StatCard({
-    required this.icon,
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardTheme.color,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: color.withValues(alpha: 0.2)),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: color, size: 28),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: color,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade500,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -9,6 +9,8 @@ class AppConstants {
   static const String waterBox = 'water_intake';
   static const String settingsBox = 'settings';
   static const String profileBox = 'profile';
+  static const String moodBox = 'mood_entries';
+  static const String streakBox = 'streaks';
 
   // Settings keys
   static const String keyThemeMode = 'theme_mode';
