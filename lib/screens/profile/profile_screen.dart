@@ -15,8 +15,13 @@ import '../bmi_calculator/bmi_calculator_screen.dart';
 import '../emergency_sos/emergency_sos_screen.dart';
 import '../export_report/export_report_screen.dart';
 import '../gamification/gamification_screen.dart';
+import '../habit_tracker/habit_tracker_screen.dart';
+import '../home_remedies/home_remedies_screen.dart';
 import '../sleep_tracker/sleep_tracker_screen.dart';
+import '../themes/themes_screen.dart';
 import '../water_tracker/water_tracker_screen.dart';
+import '../weekly_report/weekly_report_screen.dart';
+import '../weight_tracker/weight_tracker_screen.dart';
 import '../settings/settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -120,6 +125,61 @@ class ProfileScreen extends StatelessWidget {
               onTap: () {
                 HapticUtils.lightTap();
                 Navigator.push(context, SlidePageRoute(page: const ExportReportScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.monitor_weight_rounded,
+              title: 'Weight & Body Tracker',
+              subtitle: 'Track weight, waist, hip',
+              color: AppColors.bmiColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const WeightTrackerScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.checklist_rounded,
+              title: 'Habit Tracker',
+              subtitle: 'Build daily healthy habits',
+              color: AppColors.periodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const HabitTrackerScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.local_florist_rounded,
+              title: 'Home Remedies',
+              subtitle: 'Gharelu nuskhe & natural cures',
+              color: AppColors.healthColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const HomeRemediesScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.assessment_rounded,
+              title: 'Weekly Report Card',
+              subtitle: 'Your health score & grade',
+              color: AppColors.waterColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const WeeklyReportScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.palette_rounded,
+              title: 'Themes',
+              subtitle: 'Unlock beautiful color themes',
+              color: AppColors.moodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const ThemesScreen()));
               },
             ),
             _buildMenuCard(

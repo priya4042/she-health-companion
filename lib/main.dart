@@ -10,13 +10,17 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/app_lock_service.dart';
 import 'core/utils/notification_service.dart';
 import 'data/models/challenge_model.dart';
+import 'data/models/challenge_model.dart';
+import 'data/models/habit_model.dart';
 import 'data/models/medicine_model.dart';
 import 'data/models/mood_model.dart';
 import 'data/models/period_model.dart';
 import 'data/models/sleep_model.dart';
 import 'data/models/streak_model.dart';
 import 'data/models/water_model.dart';
+import 'data/models/weight_model.dart';
 import 'data/providers/gamification_provider.dart';
+import 'data/providers/habit_provider.dart';
 import 'data/providers/medicine_provider.dart';
 import 'data/providers/mood_provider.dart';
 import 'data/providers/period_provider.dart';
@@ -25,6 +29,7 @@ import 'data/providers/sleep_provider.dart';
 import 'data/providers/streak_provider.dart';
 import 'data/providers/theme_provider.dart';
 import 'data/providers/water_provider.dart';
+import 'data/providers/weight_provider.dart';
 import 'screens/splash/splash_screen.dart';
 
 void main() async {
@@ -44,6 +49,9 @@ void main() async {
   Hive.registerAdapter(SleepRecordAdapter());
   Hive.registerAdapter(DailyChallengeAdapter());
   Hive.registerAdapter(UserAchievementAdapter());
+  Hive.registerAdapter(WeightRecordAdapter());
+  Hive.registerAdapter(HabitModelAdapter());
+  Hive.registerAdapter(HabitCompletionAdapter());
 
   // Open Hive boxes
   await Hive.openBox<PeriodRecord>(AppConstants.periodBox);
@@ -56,6 +64,9 @@ void main() async {
   await Hive.openBox<SleepRecord>(AppConstants.sleepBox);
   await Hive.openBox<DailyChallenge>(AppConstants.challengeBox);
   await Hive.openBox<UserAchievement>(AppConstants.achievementBox);
+  await Hive.openBox<WeightRecord>(AppConstants.weightBox);
+  await Hive.openBox<HabitModel>(AppConstants.habitBox);
+  await Hive.openBox<HabitCompletion>(AppConstants.habitCompletionBox);
   await Hive.openBox(AppConstants.settingsBox);
   await Hive.openBox(AppConstants.profileBox);
 
@@ -88,6 +99,8 @@ class DailyLifeHelperApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => StreakProvider()),
         ChangeNotifierProvider(create: (_) => SleepProvider()),
         ChangeNotifierProvider(create: (_) => GamificationProvider()),
+        ChangeNotifierProvider(create: (_) => WeightProvider()),
+        ChangeNotifierProvider(create: (_) => HabitProvider()),
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, _) {

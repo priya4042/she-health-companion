@@ -14,6 +14,12 @@ class AppConstants {
   static const String sleepBox = 'sleep_records';
   static const String challengeBox = 'challenges';
   static const String achievementBox = 'achievements';
+  static const String weightBox = 'weight_records';
+  static const String habitBox = 'habits';
+  static const String habitCompletionBox = 'habit_completions';
+
+  // Theme
+  static const String keyCustomTheme = 'custom_theme';
 
   // Emergency contacts
   static const String keyEmergencyContacts = 'emergency_contacts';
