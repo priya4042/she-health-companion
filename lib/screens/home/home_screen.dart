@@ -8,7 +8,7 @@ import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_gradients.dart';
 import '../../core/utils/date_utils.dart';
 import '../../core/utils/haptic_utils.dart';
-import '../../core/utils/page_transitions.dart';
+import '../../core/utils/loader_transitions.dart';
 import '../../data/providers/medicine_provider.dart';
 import '../../data/providers/period_provider.dart';
 import '../../data/providers/profile_provider.dart';
@@ -311,7 +311,7 @@ class HomeScreen extends StatelessWidget {
       gradient: AppGradients.water,
       onTap: () {
         Navigator.of(context).push(
-          SlidePageRoute(page: const WaterTrackerScreen()),
+          LoaderPageRoute(page: const WaterTrackerScreen()),
         );
       },
       child: Row(
@@ -434,7 +434,7 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             onTap: () {
               Navigator.of(context).push(
-                SlidePageRoute(page: const BmiCalculatorScreen()),
+                LoaderPageRoute(page: const BmiCalculatorScreen()),
               );
             },
             child: const Column(
@@ -462,7 +462,7 @@ class HomeScreen extends StatelessWidget {
             padding: const EdgeInsets.all(16),
             onTap: () {
               Navigator.of(context).push(
-                SlidePageRoute(page: const AnalyticsScreen()),
+                LoaderPageRoute(page: const AnalyticsScreen()),
               );
             },
             child: const Column(

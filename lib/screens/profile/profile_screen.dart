@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../core/constants/health_tips.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/haptic_utils.dart';
-import '../../core/utils/page_transitions.dart';
+import '../../core/utils/loader_transitions.dart';
 import '../../data/providers/profile_provider.dart';
 
 import '../../core/utils/app_lock_service.dart';
@@ -51,7 +51,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.waterColor,
               onTap: () => Navigator.push(
                 context,
-                SlidePageRoute(page: const WaterTrackerScreen()),
+                LoaderPageRoute(page: const WaterTrackerScreen()),
               ),
             ),
             _buildMenuCard(
@@ -64,7 +64,7 @@ class ProfileScreen extends StatelessWidget {
                 HapticUtils.lightTap();
                 Navigator.push(
                   context,
-                  SlidePageRoute(page: const BmiCalculatorScreen()),
+                  LoaderPageRoute(page: const BmiCalculatorScreen()),
                 );
               },
             ),
@@ -78,7 +78,7 @@ class ProfileScreen extends StatelessWidget {
                 HapticUtils.lightTap();
                 Navigator.push(
                   context,
-                  SlidePageRoute(page: const AnalyticsScreen()),
+                  LoaderPageRoute(page: const AnalyticsScreen()),
                 );
               },
             ),
@@ -90,7 +90,7 @@ class ProfileScreen extends StatelessWidget {
               color: const Color(0xFF5C6BC0),
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const SleepTrackerScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const SleepTrackerScreen()));
               },
             ),
             _buildMenuCard(
@@ -101,7 +101,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.moodColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const GamificationScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const GamificationScreen()));
               },
             ),
             _buildMenuCard(
@@ -112,7 +112,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.error,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const EmergencySosScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const EmergencySosScreen()));
               },
             ),
             _buildMenuCard(
@@ -123,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.analyticsColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const ExportReportScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const ExportReportScreen()));
               },
             ),
             _buildMenuCard(
@@ -134,7 +134,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.bmiColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const WeightTrackerScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const WeightTrackerScreen()));
               },
             ),
             _buildMenuCard(
@@ -145,7 +145,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.periodColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const HabitTrackerScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const HabitTrackerScreen()));
               },
             ),
             _buildMenuCard(
@@ -156,7 +156,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.healthColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const HomeRemediesScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const HomeRemediesScreen()));
               },
             ),
             _buildMenuCard(
@@ -167,7 +167,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.waterColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const WeeklyReportScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const WeeklyReportScreen()));
               },
             ),
             _buildMenuCard(
@@ -178,7 +178,7 @@ class ProfileScreen extends StatelessWidget {
               color: AppColors.moodColor,
               onTap: () {
                 HapticUtils.lightTap();
-                Navigator.push(context, SlidePageRoute(page: const ThemesScreen()));
+                Navigator.push(context, LoaderPageRoute(page: const ThemesScreen()));
               },
             ),
             _buildMenuCard(

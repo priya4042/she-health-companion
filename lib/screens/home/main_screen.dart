@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/haptic_utils.dart';
 import '../../data/providers/medicine_provider.dart';
+import '../../widgets/app_loader.dart';
 import '../period_tracker/period_tracker_screen.dart';
 import '../medicine_reminder/medicine_reminder_screen.dart';
 import '../mood_journal/mood_journal_screen.dart';
@@ -20,6 +21,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  bool _isTransitioning = false;
 
   final _screens = const [
     HomeScreen(),
@@ -37,14 +39,44 @@ class _MainScreenState extends State<MainScreen> {
     });
   }
 
+  void _onTabTap(int index) {
+    if (index == _currentIndex) return;
+
+    HapticUtils.lightTap();
+    setState(() => _isTransitioning = true);
+
+    // Short loader before showing new tab
+    Future.delayed(const Duration(milliseconds: 400), () {
+      if (mounted) {
+        setState(() {
+          _currentIndex = index;
+          _isTransitioning = false;
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 300),
+        switchInCurve: Curves.easeOut,
+        switchOutCurve: Curves.easeIn,
+        child: _isTransitioning
+            ? const Center(
+                key: ValueKey('loader'),
+                child: AppLoader(
+                  size: 60,
+                  showMessage: false,
+                ),
+              )
+            : KeyedSubtree(
+                key: ValueKey(_currentIndex),
+                child: _screens[_currentIndex],
+              ),
       ),
       bottomNavigationBar: CurvedNavigationBar(
         index: _currentIndex,
@@ -71,10 +103,7 @@ class _MainScreenState extends State<MainScreen> {
               size: 26,
               color: _currentIndex == 4 ? Colors.white : Colors.grey),
         ],
-        onTap: (index) {
-          HapticUtils.lightTap();
-          setState(() => _currentIndex = index);
-        },
+        onTap: _onTabTap,
       ),
     );
   }

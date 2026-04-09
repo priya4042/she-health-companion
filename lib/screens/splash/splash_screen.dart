@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../core/theme/app_colors.dart';
+import '../../widgets/app_loader.dart';
 import '../../data/providers/profile_provider.dart';
 import '../onboarding/onboarding_screen.dart';
 import '../home/main_screen.dart';
@@ -18,7 +19,6 @@ class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _fadeController;
   late AnimationController _pulseController;
-  late AnimationController _loadingController;
   late Animation<double> _fadeAnimation;
   late Animation<double> _scaleAnimation;
   late Animation<double> _pulseAnimation;
@@ -48,12 +48,6 @@ class _SplashScreenState extends State<SplashScreen>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    // Loading dots
-    _loadingController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    )..repeat();
-
     _fadeController.forward();
     _navigateAfterDelay();
   }
@@ -82,7 +76,6 @@ class _SplashScreenState extends State<SplashScreen>
   void dispose() {
     _fadeController.dispose();
     _pulseController.dispose();
-    _loadingController.dispose();
     super.dispose();
   }
 
@@ -180,7 +173,7 @@ class _SplashScreenState extends State<SplashScreen>
                       const SizedBox(height: 40),
 
                       // Loading dots
-                      _buildLoadingDots(),
+                      const BouncingDotsLoader(color: Colors.white, dotSize: 10),
                     ],
                   ),
                 ),
@@ -214,32 +207,5 @@ class _SplashScreenState extends State<SplashScreen>
         ),
       );
     });
-  }
-
-  Widget _buildLoadingDots() {
-    return AnimatedBuilder(
-      animation: _loadingController,
-      builder: (_, __) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(3, (index) {
-            final delay = index * 0.2;
-            final progress =
-                ((_loadingController.value - delay) % 1.0).clamp(0.0, 1.0);
-            final opacity = (1 - (progress - 0.5).abs() * 2).clamp(0.3, 1.0);
-
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 4),
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white.withValues(alpha: opacity),
-              ),
-            );
-          }),
-        );
-      },
-    );
   }
 }
