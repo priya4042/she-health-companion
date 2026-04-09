@@ -7,7 +7,6 @@ import '../../core/constants/app_constants.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/utils/haptic_utils.dart';
 import '../../widgets/glass_card.dart';
-import '../../widgets/gradient_card.dart';
 
 class EmergencySosScreen extends StatefulWidget {
   const EmergencySosScreen({super.key});

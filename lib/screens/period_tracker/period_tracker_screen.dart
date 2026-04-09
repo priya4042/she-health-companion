@@ -513,7 +513,7 @@ class _PeriodTrackerScreenState extends State<PeriodTrackerScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   DropdownButtonFormField<String>(
-                    value: selectedSymptom,
+                    initialValue: selectedSymptom,
                     items: symptomTypes
                         .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                         .toList(),

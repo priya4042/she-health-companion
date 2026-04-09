@@ -399,7 +399,7 @@ class _WaterTrackerScreenState extends State<WaterTrackerScreen> {
               Switch(
                 value: water.reminderEnabled,
                 onChanged: water.toggleReminder,
-                activeColor: AppColors.waterColor,
+                activeTrackColor: AppColors.waterColor,
               ),
             ],
           ),

@@ -381,7 +381,7 @@ class _SleepTrackerScreenState extends State<SleepTrackerScreen> {
               Switch(
                 value: sleep.reminderEnabled,
                 onChanged: sleep.toggleReminder,
-                activeColor: _sleepColor,
+                activeTrackColor: _sleepColor,
               ),
             ],
           ),

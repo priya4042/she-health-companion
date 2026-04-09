@@ -12,7 +12,6 @@ import '../../data/providers/period_provider.dart';
 import '../../data/providers/sleep_provider.dart';
 import '../../data/providers/streak_provider.dart';
 import '../../data/providers/water_provider.dart';
-import '../../widgets/gradient_card.dart';
 
 class WeeklyReportScreen extends StatelessWidget {
   const WeeklyReportScreen({super.key});

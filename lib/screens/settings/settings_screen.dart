@@ -109,7 +109,7 @@ class SettingsScreen extends StatelessWidget {
             trailing: Switch(
               value: water.reminderEnabled,
               onChanged: water.toggleReminder,
-              activeColor: AppColors.waterColor,
+              activeTrackColor: AppColors.waterColor,
             ),
           ),
           const SizedBox(height: 20),

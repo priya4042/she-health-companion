@@ -318,7 +318,7 @@ class MedicineReminderScreen extends StatelessWidget {
                 value: medicine.isActive,
                 onChanged: (_) =>
                     provider.toggleMedicineActive(medicine.id),
-                activeColor: AppColors.medicineColor,
+                activeTrackColor: AppColors.medicineColor,
               ),
             ],
           ),
