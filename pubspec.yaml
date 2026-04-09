@@ -37,10 +37,25 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   curved_navigation_bar: ^1.0.6
   emoji_picker_flutter: ^2.1.1
-  syncfusion_flutter_gauges: ^24.1.41
+  syncfusion_flutter_gauges: ^33.1.47
+
+  # Security & Privacy
+  local_auth: ^2.3.0
+
+  # PDF Export
+  pdf: ^3.11.1
+  printing: ^5.13.3
+  path_provider: ^2.1.5
+
+  # Phone & URL launcher
+  url_launcher: ^6.3.1
+
+  # Localization
+  flutter_localizations:
+    sdk: flutter
 
   # Utilities
-  intl: ^0.19.0
+  intl: ^0.20.2
   shared_preferences: ^2.3.3
   uuid: ^4.5.1
   permission_handler: ^11.3.1

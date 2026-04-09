@@ -11,6 +11,14 @@ class AppConstants {
   static const String profileBox = 'profile';
   static const String moodBox = 'mood_entries';
   static const String streakBox = 'streaks';
+  static const String sleepBox = 'sleep_records';
+  static const String challengeBox = 'challenges';
+  static const String achievementBox = 'achievements';
+
+  // Emergency contacts
+  static const String keyEmergencyContacts = 'emergency_contacts';
+  static const String keyAppLockEnabled = 'app_lock_enabled';
+  static const String keyLanguage = 'language';
 
   // Settings keys
   static const String keyThemeMode = 'theme_mode';

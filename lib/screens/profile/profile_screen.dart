@@ -8,9 +8,14 @@ import '../../core/utils/haptic_utils.dart';
 import '../../core/utils/page_transitions.dart';
 import '../../data/providers/profile_provider.dart';
 
+import '../../core/utils/app_lock_service.dart';
 import '../../data/providers/theme_provider.dart';
 import '../analytics/analytics_screen.dart';
 import '../bmi_calculator/bmi_calculator_screen.dart';
+import '../emergency_sos/emergency_sos_screen.dart';
+import '../export_report/export_report_screen.dart';
+import '../gamification/gamification_screen.dart';
+import '../sleep_tracker/sleep_tracker_screen.dart';
 import '../water_tracker/water_tracker_screen.dart';
 import '../settings/settings_screen.dart';
 
@@ -75,11 +80,63 @@ class ProfileScreen extends StatelessWidget {
             ),
             _buildMenuCard(
               context,
+              icon: Icons.bedtime_rounded,
+              title: 'Sleep Tracker',
+              subtitle: 'Track your sleep patterns',
+              color: const Color(0xFF5C6BC0),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const SleepTrackerScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.emoji_events_rounded,
+              title: 'Challenges & Rewards',
+              subtitle: 'Complete daily challenges',
+              color: AppColors.moodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const GamificationScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.sos_rounded,
+              title: 'Emergency SOS',
+              subtitle: 'Quick access to emergency help',
+              color: AppColors.error,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const EmergencySosScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.picture_as_pdf_rounded,
+              title: 'Export Health Report',
+              subtitle: 'Generate PDF for your doctor',
+              color: AppColors.analyticsColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, SlidePageRoute(page: const ExportReportScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
               icon: Icons.tips_and_updates_rounded,
               title: 'Health Tips',
               subtitle: 'Browse tips by category',
               color: AppColors.healthColor,
               onTap: () => _showHealthTips(context),
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.lock_rounded,
+              title: 'App Lock',
+              subtitle: 'Protect with biometrics',
+              color: const Color(0xFF8E24AA),
+              onTap: () => _toggleAppLock(context),
             ),
             _buildMenuCard(
               context,
@@ -430,6 +487,40 @@ class ProfileScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _toggleAppLock(BuildContext context) async {
+    final lockService = AppLockService.instance;
+    final available = await lockService.isBiometricAvailable();
+
+    if (!available) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Biometric authentication not available on this device')),
+        );
+      }
+      return;
+    }
+
+    final currentlyEnabled = lockService.isEnabled;
+    if (currentlyEnabled) {
+      await lockService.setEnabled(false);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('App Lock disabled')),
+        );
+      }
+    } else {
+      final authenticated = await lockService.authenticate();
+      if (authenticated) {
+        await lockService.setEnabled(true);
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('App Lock enabled! Your data is now protected.')),
+          );
+        }
+      }
+    }
   }
 
   void _showAbout(BuildContext context) {
