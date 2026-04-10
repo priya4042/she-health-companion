@@ -10,7 +10,6 @@ import 'core/theme/app_theme.dart';
 import 'core/utils/app_lock_service.dart';
 import 'core/utils/notification_service.dart';
 import 'data/models/challenge_model.dart';
-import 'data/models/challenge_model.dart';
 import 'data/models/habit_model.dart';
 import 'data/models/medicine_model.dart';
 import 'data/models/mood_model.dart';

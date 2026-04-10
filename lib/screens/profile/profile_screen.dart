@@ -14,13 +14,28 @@ import '../bmi_calculator/bmi_calculator_screen.dart';
 import '../emergency_sos/emergency_sos_screen.dart';
 import '../export_report/export_report_screen.dart';
 import '../gamification/gamification_screen.dart';
+import '../affirmations/affirmations_screen.dart';
+import '../ask_doctor/ask_doctor_screen.dart';
+import '../breathing/breathing_screen.dart';
+import '../buddy_sync/buddy_sync_screen.dart';
+import '../cravings/cravings_screen.dart';
+import '../daily_reward/daily_reward_screen.dart';
+import '../dosha_quiz/dosha_quiz_screen.dart';
+import '../festivals/festivals_screen.dart';
 import '../habit_tracker/habit_tracker_screen.dart';
 import '../home_remedies/home_remedies_screen.dart';
+import '../horoscope/horoscope_screen.dart';
+import '../mom_mode/mom_mode_screen.dart';
+import '../period_cost/period_cost_screen.dart';
+import '../recipes/recipes_screen.dart';
 import '../sleep_tracker/sleep_tracker_screen.dart';
+import '../symptom_checker/symptom_checker_screen.dart';
 import '../themes/themes_screen.dart';
+import '../virtual_plant/virtual_plant_screen.dart';
 import '../water_tracker/water_tracker_screen.dart';
 import '../weekly_report/weekly_report_screen.dart';
 import '../weight_tracker/weight_tracker_screen.dart';
+import '../workout/workout_screen.dart';
 import '../settings/settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -179,6 +194,171 @@ class ProfileScreen extends StatelessWidget {
               onTap: () {
                 HapticUtils.lightTap();
                 Navigator.push(context, LoaderPageRoute(page: const ThemesScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.fitness_center_rounded,
+              title: 'Cycle Workouts',
+              subtitle: 'Workouts synced to your cycle',
+              color: AppColors.success,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const WorkoutScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.health_and_safety_rounded,
+              title: 'Symptom Checker',
+              subtitle: 'AI-powered symptom analysis',
+              color: const Color(0xFF7E57C2),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const SymptomCheckerScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.attach_money_rounded,
+              title: 'Period Cost Calculator',
+              subtitle: 'How much do periods cost you?',
+              color: AppColors.periodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const PeriodCostScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.fastfood_rounded,
+              title: 'Cravings Logger',
+              subtitle: 'Track your food cravings',
+              color: const Color(0xFFFF8A65),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const CravingsScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.eco_rounded,
+              title: 'Virtual Plant',
+              subtitle: 'Grow with your healthy habits',
+              color: AppColors.success,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const VirtualPlantScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.auto_awesome_rounded,
+              title: 'Daily Affirmations',
+              subtitle: 'Positive thoughts every day',
+              color: const Color(0xFFC850C0),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const AffirmationsScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.spa_rounded,
+              title: 'Ayurveda Dosha Quiz',
+              subtitle: 'Discover your body type',
+              color: const Color(0xFF26A69A),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const DoshaQuizScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.restaurant_menu_rounded,
+              title: 'Healthy Recipes',
+              subtitle: 'Indian recipes for wellness',
+              color: AppColors.healthColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const RecipesScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.psychology_rounded,
+              title: 'Health Horoscope',
+              subtitle: 'Daily reading for your sign',
+              color: const Color(0xFF673AB7),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const HoroscopeScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.air_rounded,
+              title: 'Breathing Exercises',
+              subtitle: 'Calm your mind & body',
+              color: AppColors.waterColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const BreathingScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.celebration_rounded,
+              title: 'Festival Tracker',
+              subtitle: 'Plan around Indian festivals',
+              color: const Color(0xFFFF6B35),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const FestivalsScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.medical_services_rounded,
+              title: 'Doctor Visit Prep',
+              subtitle: 'Generate notes for your doctor',
+              color: const Color(0xFF26A69A),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const AskDoctorScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.people_rounded,
+              title: 'Period Buddy Sync',
+              subtitle: 'Share your cycle with bestie',
+              color: AppColors.periodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const BuddySyncScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.family_restroom_rounded,
+              title: 'Mom & Me Mode',
+              subtitle: 'Educational content for girls',
+              color: AppColors.moodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const MomModeScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.card_giftcard_rounded,
+              title: 'Daily Reward',
+              subtitle: 'Claim points & unlock stickers',
+              color: const Color(0xFFFFD700),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const DailyRewardScreen()));
               },
             ),
             _buildMenuCard(
