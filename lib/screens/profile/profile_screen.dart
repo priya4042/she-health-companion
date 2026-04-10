@@ -15,7 +15,9 @@ import '../emergency_sos/emergency_sos_screen.dart';
 import '../export_report/export_report_screen.dart';
 import '../gamification/gamification_screen.dart';
 import '../affirmations/affirmations_screen.dart';
+import '../ai_insights/ai_insights_screen.dart';
 import '../ask_doctor/ask_doctor_screen.dart';
+import '../bollywood_affirmations/bollywood_affirmations_screen.dart';
 import '../breathing/breathing_screen.dart';
 import '../buddy_sync/buddy_sync_screen.dart';
 import '../cravings/cravings_screen.dart';
@@ -25,17 +27,23 @@ import '../festivals/festivals_screen.dart';
 import '../habit_tracker/habit_tracker_screen.dart';
 import '../home_remedies/home_remedies_screen.dart';
 import '../horoscope/horoscope_screen.dart';
+import '../mascot/mascot_screen.dart';
+import '../memory_lane/memory_lane_screen.dart';
 import '../mom_mode/mom_mode_screen.dart';
 import '../period_cost/period_cost_screen.dart';
 import '../recipes/recipes_screen.dart';
+import '../scratch_card/scratch_card_screen.dart';
 import '../sleep_tracker/sleep_tracker_screen.dart';
+import '../spin_wheel/spin_wheel_screen.dart';
 import '../symptom_checker/symptom_checker_screen.dart';
 import '../themes/themes_screen.dart';
+import '../time_capsule/time_capsule_screen.dart';
 import '../virtual_plant/virtual_plant_screen.dart';
 import '../water_tracker/water_tracker_screen.dart';
 import '../weekly_report/weekly_report_screen.dart';
 import '../weight_tracker/weight_tracker_screen.dart';
 import '../workout/workout_screen.dart';
+import '../year_review/year_review_screen.dart';
 import '../settings/settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -359,6 +367,94 @@ class ProfileScreen extends StatelessWidget {
               onTap: () {
                 HapticUtils.lightTap();
                 Navigator.push(context, LoaderPageRoute(page: const DailyRewardScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.celebration_rounded,
+              title: 'Year in Review',
+              subtitle: 'Spotify Wrapped for your health',
+              color: const Color(0xFFC850C0),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const YearReviewScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.history_rounded,
+              title: 'Memory Lane',
+              subtitle: 'On this day in past years',
+              color: const Color(0xFFAB47BC),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const MemoryLaneScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.casino_rounded,
+              title: 'Spin the Wheel',
+              subtitle: 'Daily lucky spin for prizes',
+              color: const Color(0xFFFF6B35),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const SpinWheelScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.pets_rounded,
+              title: 'Bloomy (Mascot)',
+              subtitle: 'Your animated health buddy',
+              color: AppColors.periodColor,
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const MascotScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.style_rounded,
+              title: 'Scratch Card',
+              subtitle: 'Daily mystery prizes',
+              color: const Color(0xFFFFD700),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const ScratchCardScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.psychology_alt_rounded,
+              title: 'AI Insights',
+              subtitle: 'Smart patterns from your data',
+              color: const Color(0xFF673AB7),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const AiInsightsScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.movie_filter_rounded,
+              title: 'Bollywood Affirmations',
+              subtitle: 'Affirmations with desi swag',
+              color: const Color(0xFFE91E63),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const BollywoodAffirmationsScreen()));
+              },
+            ),
+            _buildMenuCard(
+              context,
+              icon: Icons.mail_lock_rounded,
+              title: 'Time Capsule',
+              subtitle: 'Letters to your future self',
+              color: const Color(0xFF8E24AA),
+              onTap: () {
+                HapticUtils.lightTap();
+                Navigator.push(context, LoaderPageRoute(page: const TimeCapsuleScreen()));
               },
             ),
             _buildMenuCard(
