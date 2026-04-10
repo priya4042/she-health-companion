@@ -507,6 +507,8 @@ class _TimePickerTile extends StatelessWidget {
   }
 }
 
+const _kSleepColor = Color(0xFF5C6BC0);
+
 class _StatItem extends StatelessWidget {
   final String label;
   final String value;
@@ -517,7 +519,7 @@ class _StatItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _SleepTrackerScreenState._sleepColor)),
+        Text(value, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: _kSleepColor)),
         Text(label, style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
       ],
     );

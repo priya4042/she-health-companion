@@ -111,7 +111,7 @@ class _BreathingScreenState extends State<BreathingScreen>
   }
 
   void _nextPhase() {
-    if (!_isRunning) return;
+    if (!_isRunning || !mounted) return;
     HapticUtils.lightTap();
     setState(() {
       _phase = (_phase + 1) % 4;

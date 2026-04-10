@@ -56,15 +56,10 @@ class _AffirmationsScreenState extends State<AffirmationsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadFavorites();
-    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
-    _currentIndex = dayOfYear % _affirmations.length;
-  }
-
-  void _loadFavorites() {
     final raw = _settingsBox.get('favorite_affirmations', defaultValue: <int>[]);
     _favorites = (raw as List).map((e) => e as int).toSet();
-    setState(() {});
+    final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
+    _currentIndex = dayOfYear % _affirmations.length;
   }
 
   void _toggleFavorite() {

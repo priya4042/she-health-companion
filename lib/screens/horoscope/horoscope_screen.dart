@@ -79,8 +79,9 @@ class _HoroscopeScreenState extends State<HoroscopeScreen> {
   Map<String, String> _getReading(String sign) {
     final dayOfYear = DateTime.now().difference(DateTime(DateTime.now().year, 1, 1)).inDays;
     final signIndex = _signs.indexWhere((s) => s['name'] == sign);
-    final reading = _readings[(dayOfYear + signIndex) % _readings.length];
-    return Map<String, String>.from(reading);
+    final safeIndex = signIndex < 0 ? 0 : signIndex;
+    final readingIndex = (dayOfYear + safeIndex).abs() % _readings.length;
+    return Map<String, String>.from(_readings[readingIndex]);
   }
 
   @override

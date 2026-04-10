@@ -173,4 +173,21 @@ class GamificationProvider extends ChangeNotifier {
   }
 
   List<Map<String, String>> get allAchievementDefs => _achievementDefs;
+
+  /// Award bonus points (used by daily reward, etc.)
+  Future<void> addBonusPoints(int points) async {
+    final newTotal = totalPoints + points;
+    await _settingsBox.put('total_points', newTotal);
+    await _checkAchievements();
+    _loadData();
+  }
+
+  /// Spend points (used for unlocking themes/stickers)
+  Future<bool> spendPoints(int points) async {
+    if (totalPoints < points) return false;
+    final newTotal = totalPoints - points;
+    await _settingsBox.put('total_points', newTotal);
+    _loadData();
+    return true;
+  }
 }

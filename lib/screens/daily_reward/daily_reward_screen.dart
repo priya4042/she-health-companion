@@ -42,58 +42,54 @@ class _DailyRewardScreenState extends State<DailyRewardScreen> {
   @override
   void initState() {
     super.initState();
-    _loadStatus();
-  }
-
-  void _loadStatus() {
     final lastClaimStr = _settingsBox.get('last_reward_claim');
     if (lastClaimStr != null) {
       final lastClaim = DateTime.parse(lastClaimStr as String);
       _claimedToday = AppDateUtils.isSameDay(lastClaim, DateTime.now());
     }
-    _streak = _settingsBox.get('reward_streak', defaultValue: 0);
+    final streakRaw = _settingsBox.get('reward_streak', defaultValue: 0);
+    _streak = streakRaw is int ? streakRaw : 0;
     final stickers = _settingsBox.get('unlocked_stickers', defaultValue: <String>['Cherry Blossom', 'Star']);
-    _unlockedStickers = (stickers as List).map((e) => e as String).toSet();
-    setState(() {});
+    _unlockedStickers = (stickers as List).map((e) => e.toString()).toSet();
   }
 
   Future<void> _claimReward(GamificationProvider game) async {
     HapticUtils.success();
 
-    // Check streak
+    // Check streak using calendar day comparison
     final lastClaimStr = _settingsBox.get('last_reward_claim');
+    final today = AppDateUtils.dateOnly(DateTime.now());
     if (lastClaimStr != null) {
-      final lastClaim = DateTime.parse(lastClaimStr as String);
-      final daysSince = DateTime.now().difference(lastClaim).inDays;
+      final lastClaim = AppDateUtils.dateOnly(DateTime.parse(lastClaimStr as String));
+      final daysSince = today.difference(lastClaim).inDays;
       if (daysSince == 1) {
         _streak++;
       } else if (daysSince > 1) {
         _streak = 1;
       }
+      // daysSince == 0 means already claimed today, but build guards against this
     } else {
       _streak = 1;
     }
 
-    final reward = _streak * 5; // 5, 10, 15, 20...
+    final reward = _streak * 5;
 
     await _settingsBox.put('last_reward_claim', DateTime.now().toIso8601String());
     await _settingsBox.put('reward_streak', _streak);
 
-    // Add points to gamification
-    final currentPoints = game.totalPoints;
-    await _settingsBox.put('total_points', currentPoints + reward);
+    // Award points through gamification provider so state stays in sync
+    await game.addBonusPoints(reward);
 
+    if (!mounted) return;
     setState(() => _claimedToday = true);
 
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('🎉 +$reward points! Day $_streak streak'),
-          backgroundColor: AppColors.success,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('🎉 +$reward points! Day $_streak streak'),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> _unlockSticker(Map<String, dynamic> sticker, GamificationProvider game) async {
@@ -108,7 +104,8 @@ class _DailyRewardScreenState extends State<DailyRewardScreen> {
     HapticUtils.success();
     _unlockedStickers.add(sticker['name'] as String);
     await _settingsBox.put('unlocked_stickers', _unlockedStickers.toList());
-    await _settingsBox.put('total_points', game.totalPoints - cost);
+    await game.spendPoints(cost);
+    if (!mounted) return;
     setState(() {});
   }
 

@@ -199,6 +199,7 @@ class _AskDoctorScreenState extends State<AskDoctorScreen> {
             TextField(
               controller: _customController,
               maxLines: 3,
+              onChanged: (_) => setState(() {}),
               decoration: const InputDecoration(
                 hintText: 'Add your own question for the doctor...',
                 border: OutlineInputBorder(),

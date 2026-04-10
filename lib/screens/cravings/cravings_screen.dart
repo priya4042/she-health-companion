@@ -38,10 +38,10 @@ class _CravingsScreenState extends State<CravingsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadCravings();
+    _loadFromBox();
   }
 
-  void _loadCravings() {
+  void _loadFromBox() {
     final raw = _settingsBox.get('cravings', defaultValue: <dynamic>[]) as List;
     _cravings = raw.map((e) {
       final m = Map<String, dynamic>.from(e as Map);
@@ -51,7 +51,6 @@ class _CravingsScreenState extends State<CravingsScreen> {
         'date': DateTime.parse(m['date'] as String),
       };
     }).toList()..sort((a, b) => (b['date'] as DateTime).compareTo(a['date'] as DateTime));
-    setState(() {});
   }
 
   Future<void> _addCraving(String emoji, String name) async {
@@ -62,7 +61,7 @@ class _CravingsScreenState extends State<CravingsScreen> {
           'name': c['name'],
           'date': (c['date'] as DateTime).toIso8601String(),
         }).toList());
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Map<String, int> get _topCravings {

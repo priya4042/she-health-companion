@@ -26,9 +26,9 @@ class _PeriodCostScreenState extends State<PeriodCostScreen> {
     final perCycle = (_padsPerCycle * _padCost) + _painkillerCost + _otherCost;
     return perCycle * _cyclesPerYear;
   }
-  double get _lifetimeCost => _yearlyCost * (50 - _ageStarted);
-  double get _spentSoFar => _yearlyCost * (_currentAge - _ageStarted);
-  double get _remainingCost => _yearlyCost * (50 - _currentAge);
+  double get _lifetimeCost => (_yearlyCost * (50 - _ageStarted)).clamp(0, double.infinity);
+  double get _spentSoFar => (_yearlyCost * (_currentAge - _ageStarted)).clamp(0, double.infinity);
+  double get _remainingCost => (_yearlyCost * (50 - _currentAge)).clamp(0, double.infinity);
 
   @override
   Widget build(BuildContext context) {
@@ -77,9 +77,18 @@ class _PeriodCostScreenState extends State<PeriodCostScreen> {
             _buildSlider('Other (heating pad, food) ₹', _otherCost, 0, 500, '₹${_otherCost.round()}',
                 (v) => setState(() => _otherCost = v)),
             _buildSlider('Age you started periods', _ageStarted.toDouble(), 9, 18, '$_ageStarted yrs',
-                (v) => setState(() => _ageStarted = v.round())),
-            _buildSlider('Your current age', _currentAge.toDouble(), _ageStarted.toDouble(), 50,
-                '$_currentAge yrs', (v) => setState(() => _currentAge = v.round())),
+                (v) => setState(() {
+                      _ageStarted = v.round();
+                      // Keep current age >= started age
+                      if (_currentAge < _ageStarted) _currentAge = _ageStarted;
+                    })),
+            _buildSlider(
+                'Your current age',
+                _currentAge.toDouble().clamp(_ageStarted.toDouble(), 50),
+                _ageStarted.toDouble(),
+                50,
+                '$_currentAge yrs',
+                (v) => setState(() => _currentAge = v.round())),
 
             const SizedBox(height: 16),
             GlassCard(
@@ -96,12 +105,12 @@ class _PeriodCostScreenState extends State<PeriodCostScreen> {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    'Switch to a menstrual cup (₹400-800, lasts 5-10 years).\n\n'
-                    'You could save ₹${0} over your lifetime!',
+                    'Switch to a menstrual cup (₹400-800, lasts 5-10 years).',
                     style: TextStyle(fontSize: 13, height: 1.5),
                   ),
+                  const SizedBox(height: 8),
                   Text(
-                    'Potential savings: ₹${(_lifetimeCost - 800).toStringAsFixed(0)}',
+                    'Potential lifetime savings: ₹${(_lifetimeCost - 800).clamp(0, double.infinity).toStringAsFixed(0)}',
                     style: const TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
